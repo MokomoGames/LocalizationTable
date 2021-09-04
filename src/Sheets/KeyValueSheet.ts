@@ -1,4 +1,12 @@
-import {KeyValueDataRecord} from "./LocalizedSheet";
+export class KeyValueDataRecord {
+    key : string
+    value : string
+
+    constructor(key:string, value:string) {
+        this.key = key
+        this.value = value
+    }
+}
 
 export class KeyValueSheetDelegates {
     getRecordValues : (key:string) => string[]

@@ -1,5 +1,6 @@
 import {LocalizeType} from "./LocalizeType";
-import {KeyValueDataRecord, LocalizedDataRecord} from "../Sheets/LocalizedSheet";
+import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
+import {KeyValueDataRecord} from "../Sheets/KeyValueSheet";
 
 export class iOSStoreLocalizeConfigExporterDelegates
 {

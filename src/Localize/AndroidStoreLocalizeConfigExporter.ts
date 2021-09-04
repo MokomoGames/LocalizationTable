@@ -1,6 +1,6 @@
 import {LocalizeType} from "./LocalizeType";
 import {DriveService} from "../GoogleDrive/DriveService";
-import {KeyValueDataRecord, LocalizedDataRecord} from "../Sheets/LocalizedSheet";
+import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
 
 export class AndroidStoreLocalizeConfigExporterDelegates
 {
