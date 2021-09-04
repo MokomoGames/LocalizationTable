@@ -17,14 +17,14 @@ import {LocalizedDataRecord} from "./Sheets/LocalizedSheet";
 export let config: Config;
 config = new Config();
 
-function UpdateAllStringTable() {
+function updateStringTableAll() {
     const repository = new SheetsRepository(config.spreadsheet_id)
     new PlayFabUploader().uploadStringTable(
         repository.getLocalizedWordTableList().getRecordsByLanguage(Localize.getAllLanguage()),
         Localize.getAllLanguage())
 }
 
-function outputToFileUnity() {
+function outputUnityResources() {
     class UnityOutputConfig{
         fileName : string
         languageList : LocalizeType[]
@@ -36,27 +36,17 @@ function outputToFileUnity() {
     }
 
     const outputConfigs = [
-        new UnityOutputConfig(
-            "CharacterList_SC.txt",
-            [LocalizeType.SimplifiedChineseCharacters]),
-        new UnityOutputConfig(
-            "CharacterList_TC.txt",
-            [LocalizeType.TraditionalChineseCharacters]),
-        new UnityOutputConfig(
-            "CharacterList_AR.txt",
-            [LocalizeType.Arabic]),
-        new UnityOutputConfig(
-            "CharacterList_KR.txt",
-            [LocalizeType.Korean]),
-        new UnityOutputConfig(
-            "CharacterList_JP_EN_RU.txt",
+        new UnityOutputConfig("CharacterList_SC.txt", [LocalizeType.SimplifiedChineseCharacters]),
+        new UnityOutputConfig("CharacterList_TC.txt", [LocalizeType.TraditionalChineseCharacters]),
+        new UnityOutputConfig("CharacterList_AR.txt", [LocalizeType.Arabic]),
+        new UnityOutputConfig("CharacterList_KR.txt", [LocalizeType.Korean]),
+        new UnityOutputConfig("CharacterList_JP_EN_RU.txt",
             [
                 LocalizeType.Japanese,
                 LocalizeType.English,
                 LocalizeType.Russian
             ]),
-        new UnityOutputConfig(
-            "CharacterList_Umlaut.txt",
+        new UnityOutputConfig("CharacterList_Umlaut.txt",
             [
                 LocalizeType.Dutch,
                 LocalizeType.French,
@@ -79,7 +69,7 @@ function outputToFileUnity() {
     }
 }
 
-function outputIOSTextResources() {
+function outputIOSResources() {
     const rootFolder = DriveService.createFolder(config.drive_project_folder_id, "ios");
     const metadataFolder = DriveService.createFolder(rootFolder.getId(), "metadata");
     const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
@@ -110,7 +100,7 @@ function outputIOSTextResources() {
     new IOSStoreLocalizeConfigExporter(delegates, metadataFolder.getId()).output()
 }
 
-function outputAndroidTextResources() {
+function outputAndroidResources() {
     const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
     const delegates = new AndroidStoreLocalizeConfigExporterDelegates(
         (id:string, folderName:string) => {
@@ -146,17 +136,17 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
     const methodName : string = json["method_name"]
     switch (methodName) {
-        case "updateAllStringTable":
-            UpdateAllStringTable()
+        case "updateStringTableAll":
+            updateStringTableAll()
             break
-        case "outputLocalizediOSStoreFile":
-            outputIOSTextResources()
+        case "outputIOSResources":
+            outputIOSResources()
             break
-        case "outputLocalizedAndroidStoreFile":
-            outputAndroidTextResources()
+        case "outputAndroidResources":
+            outputAndroidResources()
             break
         case "outputCharacterListForUnity":
-            outputToFileUnity()
+            outputUnityResources()
             break
     }
 
