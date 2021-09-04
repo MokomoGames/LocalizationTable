@@ -88,12 +88,12 @@ function outputIOSResources() {
         },
         ()=>{
             return sheetsRepository
-                .getAppStoreNonLocalizedConfigSheet()
+                .getAppStoreConfigSheet()
                 .fetchKeyValueDataTable()
         },
         ()=>{
             return sheetsRepository
-                .getAppStoreNonLocalizedReviewConfig()
+                .getAppStoreReviewConfig()
                 .fetchKeyValueDataTable()
         }
     )

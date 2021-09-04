@@ -4,10 +4,10 @@ import {LocalizedSheet, LocalizedSheetDelegates} from "./LocalizedSheet";
 import {InAppLocalizedWordTable} from "../Localize/InAppLocalizedWordTable";
 
 export class SheetsRepository {
-    spreadsheet : GoogleAppsScript.Spreadsheet.Spreadsheet
+    private readonly spreadsheet : GoogleAppsScript.Spreadsheet.Spreadsheet
     private readonly appStoreLocalizedConfigSheet: LocalizedSheet
-    private readonly appStoreNonLocalizedConfigSheet: KeyValueSheet
-    private readonly appStoreNonLocalizedReviewConfig : KeyValueSheet
+    private readonly appStoreConfigSheet: KeyValueSheet
+    private readonly appStoreReviewConfigSheet : KeyValueSheet
     private readonly googlePlayStoreLocalizedConfigSheet: LocalizedSheet
     private readonly inAppLocalizedWordTable! : InAppLocalizedWordTable
 
@@ -17,11 +17,11 @@ export class SheetsRepository {
     getAppStoreLocalizedConfigSheet(){
         return this.appStoreLocalizedConfigSheet
     }
-    getAppStoreNonLocalizedConfigSheet(){
-        return this.appStoreNonLocalizedConfigSheet
+    getAppStoreConfigSheet(){
+        return this.appStoreConfigSheet
     }
-    getAppStoreNonLocalizedReviewConfig(){
-        return this.appStoreNonLocalizedReviewConfig
+    getAppStoreReviewConfig(){
+        return this.appStoreReviewConfigSheet
     }
     getLocalizedWordTableList(){
         return this.inAppLocalizedWordTable
@@ -38,7 +38,7 @@ export class SheetsRepository {
 
         {
             const sheet = new Sheet(this.spreadsheet.getSheetByName("AppStoreNonLocalizedConfig")!)
-            this.appStoreNonLocalizedConfigSheet =
+            this.appStoreConfigSheet =
                 new KeyValueSheet(
                     new KeyValueSheetDelegates(
                         sheet.getRecordValues.bind(sheet)
@@ -48,7 +48,7 @@ export class SheetsRepository {
 
         {
             const sheet = new Sheet(this.spreadsheet.getSheetByName("AppStoreNonLocalizedReviewConfig")!)
-            this.appStoreNonLocalizedReviewConfig =
+            this.appStoreReviewConfigSheet =
                 new KeyValueSheet(
                     new KeyValueSheetDelegates(
                         sheet.getRecordValues.bind(sheet)
@@ -66,22 +66,21 @@ export class SheetsRepository {
                 )
         }
 
-        const rawSheet = this.spreadsheet.getSheetByName("OutputLocalizeTableNameRepository")
-        if(rawSheet == null){
-            return
-        }
+        {
+            const sheet = this.spreadsheet.getSheetByName("OutputLocalizeTableNameRepository")
+            if(sheet == null){
+                return
+            }
 
-        const sheetNames = new Sheet(rawSheet).getRecordValues("SheetName")
-        this.inAppLocalizedWordTable =
-            new InAppLocalizedWordTable(
-                sheetNames
-                    .map(x => this.spreadsheet.getSheetByName(x))
-                    .map(x => new Sheet(x!))
-                    .map(sheet => new LocalizedSheet(
-                        new LocalizedSheetDelegates(
-                            sheet.getRecordValues.bind(sheet)
-                        )
-                    ))
-            )
+            const sheetNames = new Sheet(sheet).getRecordValues("SheetName")
+            const localizedSheets = sheetNames
+                .map(sheetName => new Sheet(this.spreadsheet.getSheetByName(sheetName)!))
+                .map(sheet => new LocalizedSheet(
+                    new LocalizedSheetDelegates(
+                        sheet.getRecordValues.bind(sheet)
+                    )
+                ))
+            this.inAppLocalizedWordTable = new InAppLocalizedWordTable(localizedSheets)
+        }
     }
 }
