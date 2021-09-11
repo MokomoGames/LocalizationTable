@@ -2,17 +2,9 @@ import {DriveService} from "./GoogleDrive/DriveService";
 import {Config} from "./Config";
 import {SheetsRepository} from "./Sheets/SheetsRepository"
 import {Localize, LocalizeType} from "./Localize/LocalizeType";
-import {
-    AndroidStoreLocalizeConfigExporter,
-    AndroidStoreLocalizeConfigExporterDelegates
-} from "./Localize/AndroidStoreLocalizeConfigExporter";
-
-import {
-    IOSStoreLocalizeConfigExporter,
-    iOSStoreLocalizeConfigExporterDelegates
-} from "./Localize/iOSStoreLocalizeConfigExporter";
+import {AndroidStoreLocalizeConfigExporter, AndroidStoreLocalizeConfigExporterDelegates} from "./Localize/AndroidStoreLocalizeConfigExporter";
+import {IOSStoreLocalizeConfigExporter,  IOSStoreLocalizeConfigExporterDelegates } from "./Localize/iOSStoreLocalizeConfigExporter";
 import {PlayFabUploader} from "./PlayFab/PlayFabUploader";
-import {LocalizedDataRecord} from "./Sheets/LocalizedSheet";
 
 export let config: Config;
 config = new Config();
@@ -73,7 +65,7 @@ function outputIOSResources() {
     const rootFolder = DriveService.createFolder(config.drive_project_folder_id, "ios");
     const metadataFolder = DriveService.createFolder(rootFolder.getId(), "metadata");
     const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
-    const delegates = new iOSStoreLocalizeConfigExporterDelegates(
+    const delegates = new IOSStoreLocalizeConfigExporterDelegates(
         (id:string, folderName:string) => {
             const folder = DriveService.createFolder(id, folderName)
             return folder.getId()

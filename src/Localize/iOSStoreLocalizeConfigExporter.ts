@@ -2,7 +2,7 @@ import {LocalizeType} from "./LocalizeType";
 import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
 import {KeyValueDataRecord} from "../Sheets/KeyValueSheet";
 
-export class iOSStoreLocalizeConfigExporterDelegates
+export class IOSStoreLocalizeConfigExporterDelegates
 {
     createFolder : (id:string, folderName:string) => string
     createFile : (id:string, fileName:string, fileContent:string) => void
@@ -48,10 +48,10 @@ export class IOSStoreLocalizeConfigExporter
         [LocalizeType.SimplifiedChineseCharacters]:"zn-Hans",
         [LocalizeType.TraditionalChineseCharacters]:"zn-Hant",
     };
-    delegates : iOSStoreLocalizeConfigExporterDelegates
+    delegates : IOSStoreLocalizeConfigExporterDelegates
     outputDistFolderId : string
 
-    constructor(delegates : iOSStoreLocalizeConfigExporterDelegates, outputDistFolderId:string){
+    constructor(delegates : IOSStoreLocalizeConfigExporterDelegates, outputDistFolderId:string){
         this.delegates = delegates
         this.outputDistFolderId = outputDistFolderId
     }
