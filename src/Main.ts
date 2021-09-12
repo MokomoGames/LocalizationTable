@@ -119,14 +119,12 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const json = JSON.parse(e.parameter.json)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     config = JSON.parse(e.parameter.config)
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-    const methodName : string = json["method_name"]
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const methodName : string = e.parameter.method_name
     switch (methodName) {
         case "updateStringTableAll":
             updateStringTableAll()
@@ -142,7 +140,10 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
             break
     }
 
-    const result = ""
+    const result : {[key:string] : string} = {}
+    result['method_name'] = methodName
+    result['config'] = JSON.stringify(config)
+
     return ContentService
         .createTextOutput(JSON.stringify(result))
         .setMimeType(ContentService.MimeType.JSON);
