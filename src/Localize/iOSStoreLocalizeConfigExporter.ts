@@ -1,4 +1,4 @@
-import {LocalizeType} from "./LocalizeType";
+import {Localize, LocalizeType} from "./LocalizeType";
 import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
 import {KeyValueDataRecord} from "../Sheets/KeyValueSheet";
 
@@ -58,9 +58,14 @@ export class IOSStoreLocalizeConfigExporter
 
     output(){
         // ストア情報
+        const languageFolderDic : {[key:string] : string} ={}
+        Localize.getAllLanguage().forEach(x => {
+            languageFolderDic[x] = this.delegates.createFolder(this.outputDistFolderId, x)
+        })
+
         const table = this.delegates.getAppStoreLocalizedRecordList()
         table.forEach(record => {
-            const localizedRootFolderId = this.delegates.createFolder(this.outputDistFolderId, record.language)
+            const localizedRootFolderId = languageFolderDic[record.language]
             this.delegates.createFile(localizedRootFolderId,
                 `${record.keyName}.txt`,
                 record.translatedWord)
