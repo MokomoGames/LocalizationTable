@@ -1,8 +1,10 @@
 export class Sheet {
     sheet : GoogleAppsScript.Spreadsheet.Sheet
+    headerValues : string[]
 
     constructor(sheet: GoogleAppsScript.Spreadsheet.Sheet) {
         this.sheet = sheet
+        this.headerValues = this.getHeaderValues()
     }
 
     getMaxInputedRowNum(): number {
@@ -11,8 +13,7 @@ export class Sheet {
     }
 
     getRecordValues(key: string): string[] {
-        const headers = this.getHeaderValues()
-        const keyColumn = headers.findIndex(x => x == key) + 1
+        const keyColumn = this.headerValues.findIndex(x => x == key) + 1
         return this.sheet.getRange(2,keyColumn,this.getMaxInputedRowNum(),1).getValues().flat().map(x => x as string)
     }
 
