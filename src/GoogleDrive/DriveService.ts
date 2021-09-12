@@ -12,9 +12,18 @@ export class DriveService {
         folder.createFile(fileName,content);
     }
     
-    static createFolder(folderId:string,folderName:string) : GoogleAppsScript.Drive.Folder {
+    static createFolder(folderId:string,folderName:string,overwrite =true) : GoogleAppsScript.Drive.Folder {
         const folder = DriveApp.getFolderById(folderId)
-        this.deleteFolder(folderId, folderName)
+        if(overwrite){
+            this.deleteFolder(folderId, folderName)
+            return folder.createFolder(folderName)
+        }
+
+        const existsFolder = this.getFolderByName(folderId, folderName)
+        if(existsFolder != null){
+            return existsFolder
+        }
+
         return folder.createFolder(folderName)
     }
 

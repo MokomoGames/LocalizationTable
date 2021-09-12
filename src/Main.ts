@@ -96,7 +96,7 @@ function outputAndroidResources() {
     const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
     const delegates = new AndroidStoreLocalizeConfigExporterDelegates(
         (id:string, folderName:string) => {
-          const folder = DriveService.createFolder(id, folderName)
+          const folder = DriveService.createFolder(id, folderName, false)
           return folder.getId()
         },
         (id:string, fileName:string, fileContent:string)=>{
