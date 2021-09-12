@@ -73,8 +73,9 @@ export class IOSStoreLocalizeConfigExporter
 
         // ストアレビュー情報
         const storeReviewTable = this.delegates.getAppStoreReviewRecordList()
+        const reviewInfomationFolderId = this.delegates.createFolder(this.outputDistFolderId, "review_information")
         storeReviewTable.forEach(record => {
-            this.delegates.createFile(this.outputDistFolderId, `${record.key}.txt`, record.value)
+            this.delegates.createFile(reviewInfomationFolderId, `${record.key}.txt`, record.value)
         })
     }
 }
