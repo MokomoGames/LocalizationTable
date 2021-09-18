@@ -27,7 +27,7 @@ export class IOSStoreLocalizeConfigExporterDelegates
 
 export class IOSStoreLocalizeConfigExporter
 {
-    expectedTableNames: { [id in LocalizeType]: string } = {
+    exportDirectoryTable: { [id in LocalizeType]: string } = {
         [LocalizeType.Arabic]:"ar-SA",
         [LocalizeType.German]:"de-DE",
         [LocalizeType.English]:"en-AU",
@@ -58,18 +58,15 @@ export class IOSStoreLocalizeConfigExporter
 
     output(){
         // ストア情報
-        const languageFolderDic : {[key:string] : string} ={}
-        Localize.getAllLanguage().forEach(x => {
-            languageFolderDic[x] = this.delegates.createFolder(this.outputDistFolderId, x)
-        })
-
         const table = this.delegates.getAppStoreLocalizedRecordList()
-        table.forEach(record => {
-            const localizedRootFolderId = languageFolderDic[record.language]
-            this.delegates.createFile(localizedRootFolderId,
-                `${record.keyName}.txt`,
-                record.translatedWord)
-        })
+        Object.entries(this.exportDirectoryTable).forEach(([language, folderName]) => {
+            const languageFolderId = this.delegates.createFolder(this.outputDistFolderId, folderName)
+            table.filter(x => x.language == language).forEach(record => {
+                this.delegates.createFile(languageFolderId,
+                    `${record.keyName}.txt`,
+                    record.translatedWord)
+            })
+        });
 
         const storeTable = this.delegates.getAppStoreNonLocalizedRecordList()
         storeTable.forEach(record => {

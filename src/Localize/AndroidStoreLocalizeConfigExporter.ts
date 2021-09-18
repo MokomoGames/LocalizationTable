@@ -21,7 +21,7 @@ export class AndroidStoreLocalizeConfigExporterDelegates
 
 export class AndroidStoreLocalizeConfigExporter
 {
-    expectedTableNames: { [id in LocalizeType]: string } = {
+    exportDirectoryTable: { [id in LocalizeType]: string } = {
         [LocalizeType.Arabic]:"ar",
         [LocalizeType.German]:"de-DE",
         [LocalizeType.English]:"en-AU",
@@ -55,18 +55,24 @@ export class AndroidStoreLocalizeConfigExporter
 
     output(){
         const table = this.delegates.getStoreLocalizedRecordList()
+        Object.entries(this.exportDirectoryTable).forEach(([language, folderName]) => {
+            const languageFolderId = this.delegates.createFolder(this.outputDistFolderId, folderName)
+            table.filter(x => x.language == language).forEach(record => {
+                if(record.keyName == "changelogs"){
+                    const changeLogFolder = DriveService.createFolder(languageFolderId, "changelogs")
+                    DriveService.createFile(changeLogFolder.getId(), "default.txt", record.translatedWord)
+                    return
+                }
+
+                DriveService.createFile(
+                    languageFolderId,
+                    `${record.keyName}.txt`,
+                    record.translatedWord)
+            })
+        })
+
         table.forEach(record => {
             const localizedRootFolderId = this.delegates.createFolder(this.outputDistFolderId, record.language)
-            if(record.keyName == "changelogs"){
-                const changeLogFolder = DriveService.createFolder(localizedRootFolderId, "changelogs")
-                DriveService.createFile(changeLogFolder.getId(), "default.txt", record.translatedWord)
-                return
-            }
-
-            DriveService.createFile(
-                localizedRootFolderId,
-                `${record.keyName}.txt`,
-                record.translatedWord)
         })
     }
 }
