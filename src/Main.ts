@@ -1,5 +1,5 @@
 import {DriveService} from "./GoogleDrive/DriveService";
-import {Config} from "./Config";
+import {Config, PlayFabConfig} from "./Config";
 import {SheetsRepository} from "./Sheets/SheetsRepository"
 import {Localize, LocalizeType} from "./Localize/LocalizeType";
 import {AndroidStoreLocalizeConfigExporter, AndroidStoreLocalizeConfigExporterDelegates} from "./Localize/AndroidStoreLocalizeConfigExporter";
@@ -9,9 +9,12 @@ import {PlayFabUploader} from "./PlayFab/PlayFabUploader";
 export let config: Config;
 config = new Config();
 
-function updateStringTableAll() {
+function updateStringTableAll(playFabConfig:PlayFabConfig) {
     const repository = new SheetsRepository(config.spreadsheet_id)
-    new PlayFabUploader().uploadStringTable(
+    new PlayFabUploader(
+        playFabConfig.secret_key,
+        playFabConfig.project_id
+    ).uploadStringTable(
         repository.getLocalizedWordTableList().getRecordsByLanguage(Localize.getAllLanguage()),
         Localize.getAllLanguage())
 }
@@ -116,18 +119,13 @@ function outputAndroidResources() {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     config = JSON.parse(e.parameter.config)
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const methodName : string = e.parameter.method_name
     switch (methodName) {
         case "updateStringTableAll":
-            updateStringTableAll()
+            const playfabConfig : PlayFabConfig = JSON.parse(e.parameter.playfab_config)
+            updateStringTableAll(playfabConfig)
             break
         case "outputIOSResources":
             outputIOSResources()

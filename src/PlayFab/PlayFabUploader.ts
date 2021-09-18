@@ -1,9 +1,16 @@
 import {PlayFabAPI} from "./PlayfabAPI";
-import {config} from "../Main";
 import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
 import {Localize, LocalizeType} from "../Localize/LocalizeType";
 
 export class PlayFabUploader{
+    secretKey : string
+    projectId : string
+
+    constructor(secretKey:string, projectId:string) {
+        this.secretKey = secretKey
+        this.projectId = projectId
+    }
+
     makePlayFabStringName(localizeType: LocalizeType){
         return `StringTable_${localizeType}`
     }
@@ -26,10 +33,7 @@ export class PlayFabUploader{
     }
     uploadStringTable(table: LocalizedDataRecord[], localizeTypes: LocalizeType[]){
         new PlayFabAPI
-            .API(
-                config.playfab_secret_key,
-                config.playfab_project_id
-            )
+            .API(this.secretKey, this.projectId)
             .setTitleData(this.convertStringTableForPlayFabStringTable(table, localizeTypes))
     }
 }
