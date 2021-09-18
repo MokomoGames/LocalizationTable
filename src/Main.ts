@@ -6,11 +6,11 @@ import {AndroidStoreLocalizeConfigExporter, AndroidStoreLocalizeConfigExporterDe
 import {IOSStoreLocalizeConfigExporter,  IOSStoreLocalizeConfigExporterDelegates } from "./Localize/iOSStoreLocalizeConfigExporter";
 import {PlayFabUploader} from "./PlayFab/PlayFabUploader";
 
-export let config: Config;
-config = new Config();
+export let gas_config: Config;
+gas_config = new Config();
 
 function updateStringTableAll(playFabConfig:PlayFabConfig) {
-    const repository = new SheetsRepository(config.spreadsheet_id)
+    const repository = new SheetsRepository(gas_config.spreadsheet_id)
     new PlayFabUploader(
         playFabConfig.secret_key,
         playFabConfig.project_id
@@ -51,8 +51,8 @@ function outputUnityResources() {
                 LocalizeType.Spanish
             ])
     ]
-    const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
-    const folder = DriveService.createFolder(config.drive_project_folder_id, "unity");
+    const sheetsRepository = new SheetsRepository(gas_config.spreadsheet_id)
+    const folder = DriveService.createFolder(gas_config.drive_project_folder_id, "unity");
     for (const outputConfig of outputConfigs) {
         DriveService.createFile(
             folder.getId(),
@@ -65,9 +65,9 @@ function outputUnityResources() {
 }
 
 function outputIOSResources() {
-    const rootFolder = DriveService.createFolder(config.drive_project_folder_id, "ios");
+    const rootFolder = DriveService.createFolder(gas_config.drive_project_folder_id, "ios");
     const metadataFolder = DriveService.createFolder(rootFolder.getId(), "metadata");
-    const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
+    const sheetsRepository = new SheetsRepository(gas_config.spreadsheet_id)
     const delegates = new IOSStoreLocalizeConfigExporterDelegates(
         (id:string, folderName:string) => {
             const folder = DriveService.createFolder(id, folderName)
@@ -96,7 +96,7 @@ function outputIOSResources() {
 }
 
 function outputAndroidResources() {
-    const sheetsRepository = new SheetsRepository(config.spreadsheet_id)
+    const sheetsRepository = new SheetsRepository(gas_config.spreadsheet_id)
     const delegates = new AndroidStoreLocalizeConfigExporterDelegates(
         (id:string, folderName:string) => {
           const folder = DriveService.createFolder(id, folderName, false)
@@ -111,7 +111,7 @@ function outputAndroidResources() {
                 .fetchLocalizedDataTable(Localize.getAllLanguage())
         }
     )
-    const platformFolder = DriveService.createFolder(config.drive_project_folder_id, "android");
+    const platformFolder = DriveService.createFolder(gas_config.drive_project_folder_id, "android");
     const metadataFolder = DriveService.createFolder(platformFolder.getId(), "metadata");
     new AndroidStoreLocalizeConfigExporter(delegates, metadataFolder.getId()).output()
 }
@@ -119,12 +119,16 @@ function outputAndroidResources() {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
-    config = JSON.parse(e.parameter.config)
+    gas_config = JSON.parse(e.parameter.gas_config)
 
     const methodName : string = e.parameter.method_name
+    const result : {[key:string] : string} = {}
+    result['method_name'] = methodName
+    result['gas_config'] = JSON.stringify(gas_config)
     switch (methodName) {
         case "updateStringTableAll":
             const playfabConfig : PlayFabConfig = JSON.parse(e.parameter.playfab_config)
+            result['playfab_config'] = JSON.stringify(playfabConfig)
             updateStringTableAll(playfabConfig)
             break
         case "outputIOSResources":
@@ -138,9 +142,6 @@ function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
             break
     }
 
-    const result : {[key:string] : string} = {}
-    result['method_name'] = methodName
-    result['config'] = JSON.stringify(config)
 
     return ContentService
         .createTextOutput(JSON.stringify(result))
