@@ -8,6 +8,7 @@ import {PlayFabUploader} from "./PlayFab/PlayFabUploader";
 import {ClassElement} from "./FileGenerator/ClassElement";
 import {Accessability} from "./FileGenerator/Accessability";
 import {StringVariableElement} from "./FileGenerator/StringVariableElement";
+import {EnumElement} from "./FileGenerator/EnumElement";
 
 export let gas_config: Config;
 gas_config = new Config();
@@ -72,15 +73,15 @@ function outputUnityResources() {
             .getLocalizedWordTableList()
             .getMessageKeyAll()
 
-    const classElement = new ClassElement(Accessability.Public, "MessageKeyList")
+    const enumElement = new EnumElement(Accessability.Public, "MessageKeyList")
     keyList.forEach(key => {
-        classElement.addVariable(new StringVariableElement(true, Accessability.Public, key, key))
+        enumElement.addElement(key)
     })
 
     DriveService.createFile(
         folder.getId(),
         "MessageKeyList.cs",
-        classElement.toString())
+        enumElement.toString())
 }
 
 function outputIOSResources() {
