@@ -5,6 +5,9 @@ import {Localize, LocalizeType} from "./Localize/LocalizeType";
 import {AndroidStoreLocalizeConfigExporter, AndroidStoreLocalizeConfigExporterDelegates} from "./Localize/AndroidStoreLocalizeConfigExporter";
 import {IOSStoreLocalizeConfigExporter,  IOSStoreLocalizeConfigExporterDelegates } from "./Localize/iOSStoreLocalizeConfigExporter";
 import {PlayFabUploader} from "./PlayFab/PlayFabUploader";
+import {ClassElement} from "./FileGenerator/ClassElement";
+import {Accessability} from "./FileGenerator/Accessability";
+import {StringVariableElement} from "./FileGenerator/StringVariableElement";
 
 export let gas_config: Config;
 gas_config = new Config();
@@ -51,7 +54,7 @@ function outputUnityResources() {
                 LocalizeType.Spanish
             ])
     ]
-    const sheetsRepository = new SheetsRepository(gas_config.spreadsheet_id)
+    const sheetsRepository : SheetsRepository = new SheetsRepository(gas_config.spreadsheet_id)
     const folder = DriveService.createFolder(gas_config.drive_project_folder_id, "unity");
     for (const outputConfig of outputConfigs) {
         DriveService.createFile(
@@ -62,6 +65,22 @@ function outputUnityResources() {
                 .getUniqueCharactersAll(outputConfig.languageList)
         )
     }
+
+    // key定数が一覧化されたcsを作成する
+    const keyList : string[] =
+        new SheetsRepository(gas_config.spreadsheet_id)
+            .getLocalizedWordTableList()
+            .getMessageKeyAll()
+
+    const classElement = new ClassElement(Accessability.Public, "MessageKeyList")
+    keyList.forEach(key => {
+        classElement.addVariable(new StringVariableElement(Accessability.Public, key, key))
+    })
+
+    DriveService.createFile(
+        folder.getId(),
+        "MessageKeyList.cs",
+        classElement.toString())
 }
 
 function outputIOSResources() {

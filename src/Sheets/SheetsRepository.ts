@@ -23,7 +23,7 @@ export class SheetsRepository {
     getAppStoreReviewConfig(){
         return this.appStoreReviewConfigSheet
     }
-    getLocalizedWordTableList(){
+    getLocalizedWordTableList() : InAppLocalizedWordTable{
         return this.inAppLocalizedWordTable
     }
 

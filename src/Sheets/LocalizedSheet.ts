@@ -33,7 +33,7 @@ export class LocalizedSheet {
 
     fetchLocalizedDataTable(localizeTypes : LocalizeType[]) : LocalizedDataRecord[] {
         const table : LocalizedDataRecord[] = []
-        const keys = this.delegates.getRecordValues("key")
+        const keys = this.fetchKeys()
         const originWordList = this.delegates.getRecordValues("origin")
         for (const localizeType of localizeTypes) {
             const translatedWordList = this.delegates.getRecordValues(localizeType)
@@ -48,5 +48,9 @@ export class LocalizedSheet {
             }
         }
         return table
+    }
+
+    fetchKeys(){
+        return this.delegates.getRecordValues("key")
     }
 }

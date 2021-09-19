@@ -12,6 +12,14 @@ export class InAppLocalizedWordTable {
         return this.localizedTableList
     }
 
+    getMessageKeyAll() : string[] {
+        let keyList : string[] = []
+        this.localizedTableList.forEach(table => {
+            keyList = keyList.concat(table.fetchKeys())
+        })
+        return keyList
+    }
+
     getRecordsByLanguage(languages : LocalizeType[]) : LocalizedDataRecord[] {
         let records : LocalizedDataRecord[] = []
         this.localizedTableList.forEach(sheet => {
