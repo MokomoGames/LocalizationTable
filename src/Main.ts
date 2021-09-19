@@ -74,7 +74,7 @@ function outputUnityResources() {
 
     const classElement = new ClassElement(Accessability.Public, "MessageKeyList")
     keyList.forEach(key => {
-        classElement.addVariable(new StringVariableElement(Accessability.Public, key, key))
+        classElement.addVariable(new StringVariableElement(true, Accessability.Public, key, key))
     })
 
     DriveService.createFile(
