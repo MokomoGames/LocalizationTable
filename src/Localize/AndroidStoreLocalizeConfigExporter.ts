@@ -1,6 +1,7 @@
 import {LocalizeType} from "./LocalizeType";
 import {DriveService} from "../GoogleDrive/DriveService";
 import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
+import {ExportConfig} from "./ExportConfig";
 
 export class AndroidStoreLocalizeConfigExporterDelegates
 {
@@ -21,30 +22,31 @@ export class AndroidStoreLocalizeConfigExporterDelegates
 
 export class AndroidStoreLocalizeConfigExporter
 {
-    exportDirectoryTable: { [id in LocalizeType]: string } = {
-        [LocalizeType.Arabic]:"ar",
-        [LocalizeType.German]:"de-DE",
-        [LocalizeType.English]:"en-AU",
-        [LocalizeType.English]:"en-CA",
-        [LocalizeType.English]:"en-GB",
-        [LocalizeType.English]:"en-US",
-        [LocalizeType.English]:"en-ES",
-        [LocalizeType.English]:"en-IN",
-        [LocalizeType.English]:"en-SG",
-        [LocalizeType.English]:"en-ZA",
-        [LocalizeType.Spanish]:"es-419",
-        [LocalizeType.Russian]:"ru-RU",
-        [LocalizeType.Swedish]:"sv-SE",
-        [LocalizeType.Korean]:"ko-KR",
-        [LocalizeType.Dutch]:"nl-NL",
-        [LocalizeType.Japanese]:"ja-JP",
-        [LocalizeType.French]:"fr-CA",
-        [LocalizeType.French]:"fr-FR",
-        [LocalizeType.Portuguese]:"pt-BR",
-        [LocalizeType.Portuguese]:"pt-PT",
-        [LocalizeType.SimplifiedChineseCharacters]:"zh-CN",
-        [LocalizeType.TraditionalChineseCharacters]:"zh-TW",
-    };
+    exportDirectoryTable: ExportConfig[] = [
+        new ExportConfig(LocalizeType.Arabic,"ar"),
+        new ExportConfig(LocalizeType.German, "de-DE"),
+        new ExportConfig(LocalizeType.English, "en-AU"),
+        new ExportConfig(LocalizeType.English, "en-CA"),
+        new ExportConfig(LocalizeType.English, "en-GB"),
+        new ExportConfig(LocalizeType.English, "en-US"),
+        new ExportConfig(LocalizeType.English, "en-ES"),
+        new ExportConfig(LocalizeType.English, "en-IN"),
+        new ExportConfig(LocalizeType.English, "en-SG"),
+        new ExportConfig(LocalizeType.English, "en-ZA"),
+        new ExportConfig(LocalizeType.Spanish, "es-419"),
+        new ExportConfig(LocalizeType.Russian, "ru-RU"),
+        new ExportConfig(LocalizeType.Swedish, "sv-SE"),
+        new ExportConfig(LocalizeType.Korean, "ko-KR"),
+        new ExportConfig(LocalizeType.Dutch, "nl-NL"),
+        new ExportConfig(LocalizeType.Japanese, "ja-JP"),
+        new ExportConfig(LocalizeType.French, "fr-CA"),
+        new ExportConfig(LocalizeType.French, "fr-FR"),
+        new ExportConfig(LocalizeType.Portuguese, "pt-BR"),
+        new ExportConfig(LocalizeType.Portuguese, "pt-PT"),
+        new ExportConfig(LocalizeType.SimplifiedChineseCharacters, "zh-CN"),
+        new ExportConfig(LocalizeType.TraditionalChineseCharacters, "zh-TW"),
+    ];
+
     delegates : AndroidStoreLocalizeConfigExporterDelegates
     outputDistFolderId : string
 
@@ -55,9 +57,9 @@ export class AndroidStoreLocalizeConfigExporter
 
     output(){
         const table = this.delegates.getStoreLocalizedRecordList()
-        Object.entries(this.exportDirectoryTable).forEach(([language, folderName]) => {
-            const languageFolderId = this.delegates.createFolder(this.outputDistFolderId, folderName)
-            table.filter(x => x.language == language).forEach(record => {
+        this.exportDirectoryTable.forEach(x => {
+            const languageFolderId = this.delegates.createFolder(this.outputDistFolderId, x.directoryName)
+            table.filter(x => x.language == x.language).forEach(record => {
                 if(record.keyName == "changelogs"){
                     const changeLogFolder = DriveService.createFolder(languageFolderId, "changelogs")
                     DriveService.createFile(changeLogFolder.getId(), "default.txt", record.translatedWord)

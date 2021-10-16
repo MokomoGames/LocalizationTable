@@ -1,6 +1,7 @@
-import {Localize, LocalizeType} from "./LocalizeType";
+import {LocalizeType} from "./LocalizeType";
 import {LocalizedDataRecord} from "../Sheets/LocalizedSheet";
 import {KeyValueDataRecord} from "../Sheets/KeyValueSheet";
+import {ExportConfig} from "./ExportConfig";
 
 export class IOSStoreLocalizeConfigExporterDelegates
 {
@@ -27,27 +28,27 @@ export class IOSStoreLocalizeConfigExporterDelegates
 
 export class IOSStoreLocalizeConfigExporter
 {
-    exportDirectoryTable: { [id in LocalizeType]: string } = {
-        [LocalizeType.Arabic]:"ar-SA",
-        [LocalizeType.German]:"de-DE",
-        [LocalizeType.English]:"en-AU",
-        [LocalizeType.English]:"en-CA",
-        [LocalizeType.English]:"en-GB",
-        [LocalizeType.English]:"en-US",
-        [LocalizeType.English]:"es-ES",
-        [LocalizeType.Spanish]:"es-MX",
-        [LocalizeType.Russian]:"ru",
-        [LocalizeType.Swedish]:"sv",
-        [LocalizeType.Korean]:"ko",
-        [LocalizeType.Dutch]:"nl-NL",
-        [LocalizeType.Japanese]:"ja",
-        [LocalizeType.French]:"fr-CA",
-        [LocalizeType.French]:"fr-FR",
-        [LocalizeType.Portuguese]:"pt-BR",
-        [LocalizeType.Portuguese]:"pt-PT",
-        [LocalizeType.SimplifiedChineseCharacters]:"zh-Hans",
-        [LocalizeType.TraditionalChineseCharacters]:"zh-Hant",
-    };
+    exportDirectoryTable: ExportConfig[] = [
+        new ExportConfig(LocalizeType.Arabic, "ar-SA"),
+        new ExportConfig(LocalizeType.German, "de-DE"),
+        new ExportConfig(LocalizeType.English, "en-AU"),
+        new ExportConfig(LocalizeType.English, "en-CA"),
+        new ExportConfig(LocalizeType.English, "en-GB"),
+        new ExportConfig(LocalizeType.English, "en-US"),
+        new ExportConfig(LocalizeType.English, "es-ES"),
+        new ExportConfig(LocalizeType.Spanish, "es-MX"),
+        new ExportConfig(LocalizeType.Russian, "ru"),
+        new ExportConfig(LocalizeType.Swedish,"sv"),
+        new ExportConfig(LocalizeType.Korean,"ko"),
+        new ExportConfig(LocalizeType.Dutch,"nl-NL"),
+        new ExportConfig(LocalizeType.Japanese,"ja"),
+        new ExportConfig(LocalizeType.French,"fr-CA"),
+        new ExportConfig(LocalizeType.French,"fr-FR"),
+        new ExportConfig(LocalizeType.Portuguese, "pt-PT"),
+        new ExportConfig(LocalizeType.Portuguese, "pt-BR"),
+        new ExportConfig(LocalizeType.SimplifiedChineseCharacters, "zh-Hans"),
+        new ExportConfig(LocalizeType.TraditionalChineseCharacters, "zh-Hant"),
+    ];
     delegates : IOSStoreLocalizeConfigExporterDelegates
     outputDistFolderId : string
 
@@ -59,14 +60,14 @@ export class IOSStoreLocalizeConfigExporter
     output(){
         // ストア情報
         const table = this.delegates.getAppStoreLocalizedRecordList()
-        Object.entries(this.exportDirectoryTable).forEach(([language, folderName]) => {
-            const languageFolderId = this.delegates.createFolder(this.outputDistFolderId, folderName)
-            table.filter(x => x.language == language).forEach(record => {
+        this.exportDirectoryTable.forEach(x => {
+            const languageFolderId = this.delegates.createFolder(this.outputDistFolderId, x.directoryName)
+            table.filter(x => x.language == x.language).forEach(record => {
                 this.delegates.createFile(languageFolderId,
                     `${record.keyName}.txt`,
                     record.translatedWord)
             })
-        });
+        })
 
         const storeTable = this.delegates.getAppStoreNonLocalizedRecordList()
         storeTable.forEach(record => {
