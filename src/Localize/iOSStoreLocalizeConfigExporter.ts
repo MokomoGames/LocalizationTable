@@ -34,7 +34,7 @@ export class IOSStoreLocalizeConfigExporter
         [LocalizeType.English]:"en-CA",
         [LocalizeType.English]:"en-GB",
         [LocalizeType.English]:"en-US",
-        [LocalizeType.English]:"en-ES",
+        [LocalizeType.English]:"es-ES",
         [LocalizeType.Spanish]:"es-MX",
         [LocalizeType.Russian]:"ru",
         [LocalizeType.Swedish]:"sv",
@@ -45,8 +45,8 @@ export class IOSStoreLocalizeConfigExporter
         [LocalizeType.French]:"fr-FR",
         [LocalizeType.Portuguese]:"pt-BR",
         [LocalizeType.Portuguese]:"pt-PT",
-        [LocalizeType.SimplifiedChineseCharacters]:"zn-Hans",
-        [LocalizeType.TraditionalChineseCharacters]:"zn-Hant",
+        [LocalizeType.SimplifiedChineseCharacters]:"zh-Hans",
+        [LocalizeType.TraditionalChineseCharacters]:"zh-Hant",
     };
     delegates : IOSStoreLocalizeConfigExporterDelegates
     outputDistFolderId : string
