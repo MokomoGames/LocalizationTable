@@ -24,7 +24,7 @@ test("convertStringTableForPlayFabStringTable",()=>{
         )
     ]
 
-    const playfabUploader = new PlayFabUploader()
+    const playfabUploader = new PlayFabUploader("","")
     const keyValuesEnglish = playfabUploader.convertStringTableForPlayFabStringTable(records, [LocalizeType.English])
     expect(keyValuesEnglish[0].Key).toBe("StringTable_English")
     expect(keyValuesEnglish[0].Value).toBe(JSON.stringify({

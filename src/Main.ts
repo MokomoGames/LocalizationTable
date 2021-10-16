@@ -139,14 +139,23 @@ function outputAndroidResources() {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function doGet(e: GoogleAppsScript.Events.AppsScriptHttpRequestEvent) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     gas_config = JSON.parse(e.parameter.gas_config)
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const methodName : string = e.parameter.method_name
     const result : {[key:string] : string} = {}
     result['method_name'] = methodName
     result['gas_config'] = JSON.stringify(gas_config)
     switch (methodName) {
         case "updateStringTableAll":
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,no-case-declarations
             const playfabConfig : PlayFabConfig = JSON.parse(e.parameter.playfab_config)
             result['playfab_config'] = JSON.stringify(playfabConfig)
             updateStringTableAll(playfabConfig)
